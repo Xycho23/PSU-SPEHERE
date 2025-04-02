@@ -1,25 +1,13 @@
+from django.views.generic.list import ListView
+from django.views.generic.edit import CreateView
+from studentorg.models import Organization
+from studentorg.forms import OrganizationForm
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from .models import Organizations
-from .forms import OrganizationsForm
 
-class OrganizationListView(ListView):
-    model = Organizations
-    template_name = 'org_list.html'
+paginate_by = 5
 
 class OrganizationCreateView(CreateView):
-    model = Organizations
-    form_class = OrganizationsForm
+    model = Organization
+    form_class = OrganizationForm
     template_name = 'org_add.html'
-    success_url = reverse_lazy('org_list')
-
-class OrganizationUpdateView(UpdateView):
-    model = Organizations
-    form_class = OrganizationsForm
-    template_name = 'org_add.html'
-    success_url = reverse_lazy('org_list')
-
-class OrganizationDeleteView(DeleteView):
-    model = Organizations
-    template_name = 'org_del.html'
-    success_url = reverse_lazy('org_list')
+    success_url = reverse_lazy('organization-list')
