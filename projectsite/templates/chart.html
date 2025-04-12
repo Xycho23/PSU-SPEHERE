@@ -81,7 +81,52 @@
     }
   });
 
-  // Event listener for hover or click on line chart
+  // Dynamic Pie Chart (Modified Section)
+  var counts = Object.values(data);  // Assuming data is fetched and processed
+  console.log("call");
+
+  new Chart(pieChart, {
+    type: "pie",
+    data: {
+      datasets: [
+        {
+          data: counts,
+          backgroundColor: ["#1d7af3", "#f3545d", "#fda94b"],
+          borderWidth: 0,
+        },
+      ],
+      labels: severitylevels,  // Assuming severitylevels is defined
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      legend: {
+        position: "bottom",
+        labels: {
+          fontColor: "rgb(154, 154, 154)",
+          fontSize: 11,
+          usePointStyle: true,
+          padding: 20,
+        },
+      },
+      pieceLabel: {
+        render: "percentage",
+        fontColor: "white",
+        fontSize: 14,
+      },
+      tooltips: false,
+      layout: {
+        padding: {
+          left: 20,
+          right: 20,
+          top: 20,
+          bottom: 20,
+        },
+      },
+    },
+  });
+
+  // Event Listeners for All Charts
   lineChart.canvas.addEventListener("click", function (event) {
     var activePoints = myLineChart.getElementsAtEvent(event);
     if (activePoints.length > 0) {
@@ -90,7 +135,6 @@
     }
   });
 
-  // Event listener for hover or click on bar chart
   barChart.canvas.addEventListener("click", function (event) {
     var activePoints = myBarChart.getElementsAtEvent(event);
     if (activePoints.length > 0) {
@@ -99,16 +143,6 @@
     }
   });
 
-  // Event listener for hover or click on pie chart
-  pieChart.canvas.addEventListener("click", function (event) {
-    var activePoints = myPieChart.getElementsAtEvent(event);
-    if (activePoints.length > 0) {
-      var clickedIndex = activePoints[0]._index;
-      console.log("You clicked on segment: " + myPieChart.data.labels[clickedIndex]);
-    }
-  });
-
-  // Event listener for hover or click on doughnut chart
   doughnutChart.canvas.addEventListener("click", function (event) {
     var activePoints = myDoughnutChart.getElementsAtEvent(event);
     if (activePoints.length > 0) {
@@ -117,7 +151,6 @@
     }
   });
 
-  // Event listener for hover or click on radar chart
   radarChart.canvas.addEventListener("click", function (event) {
     var activePoints = myRadarChart.getElementsAtEvent(event);
     if (activePoints.length > 0) {
@@ -126,7 +159,6 @@
     }
   });
 
-  // Event listener for hover or click on bubble chart
   bubbleChart.canvas.addEventListener("click", function (event) {
     var activePoints = myBubbleChart.getElementsAtEvent(event);
     if (activePoints.length > 0) {
@@ -135,7 +167,6 @@
     }
   });
 
-  // Event listener for hover or click on multiple line chart
   multipleLineChart.canvas.addEventListener("click", function (event) {
     var activePoints = myMultipleLineChart.getElementsAtEvent(event);
     if (activePoints.length > 0) {
@@ -144,7 +175,6 @@
     }
   });
 
-  // Event listener for hover or click on multiple bar chart
   multipleBarChart.canvas.addEventListener("click", function (event) {
     var activePoints = myMultipleBarChart.getElementsAtEvent(event);
     if (activePoints.length > 0) {
@@ -153,7 +183,6 @@
     }
   });
 
-  // Event listener for hover or click on HTML legends chart
   htmlLegendsChart.canvas.addEventListener("click", function (event) {
     var activePoints = myHtmlLegendsChart.getElementsAtEvent(event);
     if (activePoints.length > 0) {
@@ -162,5 +191,7 @@
     }
   });
 
+  // Ensure data is fetched and loaded dynamically
+  loadChartData();
 </script>
 {% endblock %}

@@ -6,6 +6,12 @@ from studentorgs.forms import OrganizationForm
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.db import connection
+from django.http import JsonResponse
+from django.db.models.functions import ExtractMonth
+
+from django.db models import Count
+from datetime import datetime
 
 @method_decorator(login_required, name='dispatch')
 # Home Page View
@@ -24,6 +30,23 @@ class ChartView(ListView);
     def get queryset(self, *args, **kwargs):
         pass
 
+def PieCountbySeverity(request):
+    query = ' ' '
+    SELECT severity_level, COUNT(*) as count
+    FROM fire incident
+    GROUP BY severity_level
+    ' ' '
+    data = {}
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        
+    if rows:
+        data = {severity: count for severity, count in rows}
+    else:
+        data = {}
+    return JsonResponse(data)
+    
 from typing import Any
 from django.db.models.query import QuerySet
 from django.db.models import Q
