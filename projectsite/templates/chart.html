@@ -1,0 +1,166 @@
+{% block chart %}
+<script>
+  // Initialize the chart contexts
+  var lineChart = document.getElementById("lineChart").getContext("2d");
+  var barChart = document.getElementById("barChart").getContext("2d");
+  var pieChart = document.getElementById("pieChart").getContext("2d");
+  var doughnutChart = document.getElementById("doughnutChart").getContext("2d");
+  var radarChart = document.getElementById("radarChart").getContext("2d");
+  var bubbleChart = document.getElementById("bubbleChart").getContext("2d");
+  var multipleLineChart = document.getElementById("multipleLineChart").getContext("2d");
+  var multipleBarChart = document.getElementById("multipleBarChart").getContext("2d");
+  var htmlLegendsChart = document.getElementById("htmlLegendsChart").getContext("2d");
+
+  // Line Chart
+  var myLineChart = new Chart(lineChart, {
+    type: "line",
+    data: {
+      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      datasets: [{
+        label: "Active Users",
+        borderColor: "#1d7af3",
+        pointBorderColor: "#FFF",
+        pointBackgroundColor: "#1d7af3",
+        pointBorderWidth: 2,
+        pointHoverRadius: 4,
+        pointHoverBorderWidth: 1,
+        pointRadius: 4,
+        backgroundColor: "transparent",
+        fill: true,
+        borderWidth: 2,
+        data: [542, 480, 430, 550, 530, 453, 380, 434, 568, 610, 700, 900]
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      legend: {
+        position: "bottom",
+        labels: {
+          padding: 10,
+          fontColor: "#1d7af3"
+        }
+      },
+      tooltips: {
+        bodySpacing: 4,
+        mode: "nearest",
+        intersect: 0,
+        position: "nearest",
+        xPadding: 10,
+        yPadding: 10,
+        caretPadding: 10,
+        layout: {
+          padding: { left: 15, right: 15, top: 15, bottom: 15 }
+        }
+      }
+    }
+  });
+
+  // Bar Chart
+  var myBarChart = new Chart(barChart, {
+    type: "bar",
+    data: {
+      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      datasets: [{
+        label: "Sales",
+        backgroundColor: "rgb(23, 125, 255)",
+        borderColor: "rgb(23, 125, 255)",
+        data: [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 41]
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+
+  // Event listener for hover or click on line chart
+  lineChart.canvas.addEventListener("click", function (event) {
+    var activePoints = myLineChart.getElementsAtEvent(event);
+    if (activePoints.length > 0) {
+      var clickedIndex = activePoints[0]._index;
+      console.log("You clicked on month: " + myLineChart.data.labels[clickedIndex]);
+    }
+  });
+
+  // Event listener for hover or click on bar chart
+  barChart.canvas.addEventListener("click", function (event) {
+    var activePoints = myBarChart.getElementsAtEvent(event);
+    if (activePoints.length > 0) {
+      var clickedIndex = activePoints[0]._index;
+      console.log("You clicked on the month: " + myBarChart.data.labels[clickedIndex]);
+    }
+  });
+
+  // Event listener for hover or click on pie chart
+  pieChart.canvas.addEventListener("click", function (event) {
+    var activePoints = myPieChart.getElementsAtEvent(event);
+    if (activePoints.length > 0) {
+      var clickedIndex = activePoints[0]._index;
+      console.log("You clicked on segment: " + myPieChart.data.labels[clickedIndex]);
+    }
+  });
+
+  // Event listener for hover or click on doughnut chart
+  doughnutChart.canvas.addEventListener("click", function (event) {
+    var activePoints = myDoughnutChart.getElementsAtEvent(event);
+    if (activePoints.length > 0) {
+      var clickedIndex = activePoints[0]._index;
+      console.log("You clicked on segment: " + myDoughnutChart.data.labels[clickedIndex]);
+    }
+  });
+
+  // Event listener for hover or click on radar chart
+  radarChart.canvas.addEventListener("click", function (event) {
+    var activePoints = myRadarChart.getElementsAtEvent(event);
+    if (activePoints.length > 0) {
+      var clickedIndex = activePoints[0]._index;
+      console.log("You clicked on category: " + myRadarChart.data.labels[clickedIndex]);
+    }
+  });
+
+  // Event listener for hover or click on bubble chart
+  bubbleChart.canvas.addEventListener("click", function (event) {
+    var activePoints = myBubbleChart.getElementsAtEvent(event);
+    if (activePoints.length > 0) {
+      var clickedIndex = activePoints[0]._index;
+      console.log("You clicked on bubble: " + myBubbleChart.data.datasets[0].data[clickedIndex].x + ", " + myBubbleChart.data.datasets[0].data[clickedIndex].y);
+    }
+  });
+
+  // Event listener for hover or click on multiple line chart
+  multipleLineChart.canvas.addEventListener("click", function (event) {
+    var activePoints = myMultipleLineChart.getElementsAtEvent(event);
+    if (activePoints.length > 0) {
+      var clickedIndex = activePoints[0]._index;
+      console.log("You clicked on date: " + myMultipleLineChart.data.labels[clickedIndex]);
+    }
+  });
+
+  // Event listener for hover or click on multiple bar chart
+  multipleBarChart.canvas.addEventListener("click", function (event) {
+    var activePoints = myMultipleBarChart.getElementsAtEvent(event);
+    if (activePoints.length > 0) {
+      var clickedIndex = activePoints[0]._index;
+      console.log("You clicked on date: " + myMultipleBarChart.data.labels[clickedIndex]);
+    }
+  });
+
+  // Event listener for hover or click on HTML legends chart
+  htmlLegendsChart.canvas.addEventListener("click", function (event) {
+    var activePoints = myHtmlLegendsChart.getElementsAtEvent(event);
+    if (activePoints.length > 0) {
+      var clickedIndex = activePoints[0]._index;
+      console.log("You clicked on legend: " + myHtmlLegendsChart.data.labels[clickedIndex]);
+    }
+  });
+
+</script>
+{% endblock %}

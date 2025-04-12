@@ -14,6 +14,16 @@ class HomePageView(ListView):
     context_object_name = 'home'
     template_name = 'home.html'
 
+class ChartView(ListView);
+    template_name = 'chart.html'
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def get queryset(self, *args, **kwargs):
+        pass
+
 from typing import Any
 from django.db.models.query import QuerySet
 from django.db.models import Q
