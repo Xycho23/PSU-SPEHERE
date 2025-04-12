@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from datetime import datetime
 from django.db.models import Q
 from typing import Any
+from fire.models import Locations, Incident, FireStation  # Updated import
 
 @method_decorator(login_required, name='dispatch')
 class HomePageView(ListView):
@@ -83,6 +84,21 @@ def multipleBarbySeverity(request):
         result[level] = dict(sorted(result[level].items()))
     
     return JsonResponse(result)
+
+def map_station(request):
+    fireStations = FireStation.objects.values('name', 'latitude', 'longitude')
+
+    for fs in fireStations:
+        fs['latitude'] = float(fs['latitude'])
+        fs['longitude'] = float(fs['longitude'])
+
+    fireStations_list = list(fireStations)
+
+    context = {
+        'fireStations': fireStations_list,
+    }
+
+    return render(request, 'map_station.html', context)
 
 # Organization Views
 class OrganizationList(ListView):
