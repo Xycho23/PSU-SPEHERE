@@ -22,7 +22,7 @@ from studentorgs.views import StudentList, StudentCreateView, StudentUpdateView,
 from studentorgs.views import CollegeList, CollegeCreateView, CollegeUpdateView, CollegeDeleteView
 from studentorgs.views import ProgramList, ProgramCreateView, ProgramUpdateView, ProgramDeleteView
 from studentorgs import views
-from fire.views import HomePageView, ChartView, PieCountbySeverity
+from fire.views import HomePageView, ChartView, PieCountbySeverity, LineCountByMonth
 
 urlpatterns = [
     path("admin/", admin.site.urls),

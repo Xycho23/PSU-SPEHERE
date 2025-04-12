@@ -46,7 +46,35 @@ def PieCountbySeverity(request):
     else:
         data = {}
     return JsonResponse(data)
-    
+
+def LineCountByMonth (request):
+    current_year = datetime.now().year
+    result = {month: 0 for month in range(1, 13)}
+
+    incidents_per_month = Incident.objects.filter (date_time__year=current_year) \ .values_list('date_time', flat=True)
+    for date_time in incidents_per_month:
+        month = date_time.month
+        result[month] += 1
+
+    month_names = {
+        1: 'January',
+        2: 'February',
+        3: 'March',
+        4: 'April',
+        5: 'May',
+        6: 'June',
+        7: 'July',
+        8: 'August',
+        9: 'September',
+        10: 'October',
+        11: 'November',
+        12: 'December'
+    }
+
+    result_with_month_names ={
+        [int (month_names)]: count for month, count in result.items()}
+        return JsonResponse(result_with_month_names)
+        
 from typing import Any
 from django.db.models.query import QuerySet
 from django.db.models import Q

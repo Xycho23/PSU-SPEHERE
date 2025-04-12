@@ -1,6 +1,6 @@
 {% block chart %}
 <script>
-  // Initialize the chart contexts
+  // Existing line before modifications remains unchanged
   var lineChart = document.getElementById("lineChart").getContext("2d");
   var barChart = document.getElementById("barChart").getContext("2d");
   var pieChart = document.getElementById("pieChart").getContext("2d");
@@ -11,50 +11,58 @@
   var multipleBarChart = document.getElementById("multipleBarChart").getContext("2d");
   var htmlLegendsChart = document.getElementById("htmlLegendsChart").getContext("2d");
 
-  // Line Chart
-  var myLineChart = new Chart(lineChart, {
-    type: "line",
-    data: {
-      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-      datasets: [{
-        label: "Active Users",
-        borderColor: "#1d7af3",
-        pointBorderColor: "#FFF",
-        pointBackgroundColor: "#1d7af3",
-        pointBorderWidth: 2,
-        pointHoverRadius: 4,
-        pointHoverBorderWidth: 1,
-        pointRadius: 4,
-        backgroundColor: "transparent",
-        fill: true,
-        borderWidth: 2,
-        data: [542, 480, 430, 550, 530, 453, 380, 434, 568, 610, 700, 900]
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      legend: {
-        position: "bottom",
-        labels: {
-          padding: 10,
-          fontColor: "#1d7af3"
+  // Dynamic Line Chart Implementation
+  fetch("/lineChart/")
+    .then((response) => response.json())
+    .then((result_with_month_names) => {
+      var months = Object.keys(result_with_month_names);
+      var counts = Object.values(result_with_month_names);
+
+      new Chart(lineChart, {
+        type: "line",
+        data: {
+          labels: months,  // Dynamically inserting month names
+          datasets: [{
+            label: "Active Users",
+            borderColor: "#1d7af3",
+            pointBorderColor: "#FFF",
+            pointBackgroundColor: "#1d7af3",
+            pointBorderWidth: 2,
+            pointHoverRadius: 4,
+            pointHoverBorderWidth: 1,
+            pointRadius: 4,
+            backgroundColor: "transparent",
+            fill: true,
+            borderWidth: 2,
+            data: counts, // Dynamically inserting user data
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          legend: {
+            position: "bottom",
+            labels: {
+              padding: 10,
+              fontColor: "#1d7af3",
+            }
+          },
+          tooltips: {
+            bodySpacing: 4,
+            mode: "nearest",
+            intersect: 0,
+            position: "nearest",
+            xPadding: 10,
+            yPadding: 10,
+            caretPadding: 10,
+          },
+          layout: {
+            padding: { left: 15, right: 15, top: 15, bottom: 15 },
+          }
         }
-      },
-      tooltips: {
-        bodySpacing: 4,
-        mode: "nearest",
-        intersect: 0,
-        position: "nearest",
-        xPadding: 10,
-        yPadding: 10,
-        caretPadding: 10,
-        layout: {
-          padding: { left: 15, right: 15, top: 15, bottom: 15 }
-        }
-      }
-    }
-  });
+      });
+    })
+    .catch((error) => console.error("Error:", error));
 
   // Bar Chart
   var myBarChart = new Chart(barChart, {
@@ -81,20 +89,18 @@
     }
   });
 
-  // Dynamic Pie Chart (Modified Section)
-  var counts = Object.values(data);  // Assuming data is fetched and processed
+  // Dynamic Pie Chart Implementation
+  var counts = Object.values(data);  // Assuming data is fetched dynamically
   console.log("call");
 
   new Chart(pieChart, {
     type: "pie",
     data: {
-      datasets: [
-        {
-          data: counts,
-          backgroundColor: ["#1d7af3", "#f3545d", "#fda94b"],
-          borderWidth: 0,
-        },
-      ],
+      datasets: [{
+        data: counts,
+        backgroundColor: ["#1d7af3", "#f3545d", "#fda94b"],
+        borderWidth: 0,
+      }],
       labels: severitylevels,  // Assuming severitylevels is defined
     },
     options: {
@@ -107,7 +113,7 @@
           fontSize: 11,
           usePointStyle: true,
           padding: 20,
-        },
+        }
       },
       pieceLabel: {
         render: "percentage",
@@ -116,14 +122,9 @@
       },
       tooltips: false,
       layout: {
-        padding: {
-          left: 20,
-          right: 20,
-          top: 20,
-          bottom: 20,
-        },
-      },
-    },
+        padding: { left: 20, right: 20, top: 20, bottom: 20 },
+      }
+    }
   });
 
   // Event Listeners for All Charts
@@ -191,7 +192,7 @@
     }
   });
 
-  // Ensure data is fetched and loaded dynamically
+  // Ensure dynamic loading of chart data function
   loadChartData();
 </script>
 {% endblock %}
