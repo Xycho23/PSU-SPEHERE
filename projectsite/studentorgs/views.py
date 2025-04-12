@@ -10,7 +10,7 @@ from django.http import JsonResponse
 from datetime import datetime
 from django.db.models import Q
 from typing import Any
-from fire.models import Locations, Incident, FireStation  # Updated import
+from fireincident.models import Locations, Incident, FireStation  # Updated import
 
 @method_decorator(login_required, name='dispatch')
 class HomePageView(ListView):

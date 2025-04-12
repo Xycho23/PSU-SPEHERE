@@ -8,7 +8,7 @@ from studentorgs.views import (
     ProgramList, ProgramCreateView, ProgramUpdateView, ProgramDeleteView,
     line_chart_data, pie_chart_data
 )
-from fire.views import HomePageView, ChartView, PieCountbySeverity, LineCountbyMonth, MultilineIncidentTop3Country, multipleBarbySeverity, map_station  # Added map_station import
+from fireincident.views import HomePageView, ChartView, PieCountbySeverity, LineCountbyMonth, MultilineIncidentTop3Country, multipleBarbySeverity, map_station  # Updated import statement
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -49,7 +49,7 @@ urlpatterns = [
     path('program_list/<pk>/delete', ProgramDeleteView.as_view(), name='program-delete'),
 
     # Fire Chart URLs
-    path('multilineChart/', MultilineIncidentTop3Country, name='chart'),  # Existing URL
+    path('multilineChart/', MultilineIncidentTop3Country.as_view(), name='chart'),  # Updated URL
     path('multiBarChart/', multipleBarbySeverity, name='chart'),          # Added URL
     path('stations', map_station, name='map-station'),  # Added URL for map_station
 ]

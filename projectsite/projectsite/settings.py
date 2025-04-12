@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'studentorgs',
     'widget_tweaks',
     'fire',
+    'fireincident',
 ]
 
 MIDDLEWARE = [
