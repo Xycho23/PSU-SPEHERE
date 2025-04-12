@@ -12,6 +12,16 @@ from django.db.models import Q
 from typing import Any
 from fireincident.models import Locations, Incident, FireStation  # Updated import
 
+class ChartView(ListView):
+    template_name = 'chart.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def get_queryset(self, *args, **kwargs):
+        pass
+
 @method_decorator(login_required, name='dispatch')
 class HomePageView(ListView):
     model = Organization

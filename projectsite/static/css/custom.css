@@ -1,0 +1,30 @@
+/* Icon styles */
+.fas, .fa, .far, .fab {
+    color: #666;
+    font-size: 18px;
+}
+
+/* Sidebar icons */
+.sidebar-nav .nav-item i {
+    width: 24px;
+    color: #007bff;
+    text-align: center;
+    margin-right: 10px;
+}
+
+/* User dropdown icons */
+.collapse .nav li a i {
+    color: #555;
+    width: 20px;
+}
+
+/* Navbar icons */
+.navbar-nav i {
+    font-size: 20px;
+    color: #666;
+}
+
+/* Fix notification icons */
+.notif-icon i {
+    color: #fff;
+}

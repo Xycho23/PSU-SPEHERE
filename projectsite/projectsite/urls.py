@@ -6,7 +6,7 @@ from studentorgs.views import (
     StudentList, StudentCreateView, StudentUpdateView, StudentDeleteView,
     CollegeList, CollegeCreateView, CollegeUpdateView, CollegeDeleteView,
     ProgramList, ProgramCreateView, ProgramUpdateView, ProgramDeleteView,
-    line_chart_data, pie_chart_data
+    line_chart_data, pie_chart_data, ChartView
 )
 from fireincident.views import HomePageView, ChartView, PieCountbySeverity, LineCountbyMonth, MultilineIncidentTop3Country, multipleBarbySeverity, map_station  # Updated import statement
 
@@ -50,6 +50,9 @@ urlpatterns = [
 
     # Fire Chart URLs
     path('multilineChart/', MultilineIncidentTop3Country.as_view(), name='chart'),  # Updated URL
-    path('multiBarChart/', multipleBarbySeverity, name='chart'),          # Added URL
+    path('multiBarChart/', ChartView.as_view(), name='chart'),  # Updated URL
     path('stations', map_station, name='map-station'),  # Added URL for map_station
+
+    # Dashboard Chart URL
+    path('dashboard_chart', ChartView.as_view(), name='dashboard-chart'),
 ]

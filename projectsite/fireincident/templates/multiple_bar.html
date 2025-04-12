@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Charts</h4>
+        <ul class="breadcrumbs">
+            <li class="nav-home">
+                <a href="#">
+                    <i class="flaticon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Charts</a>
+            </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Multiple Bar Chart</a>
+            </li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Fire Incidents by Severity</div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="multipleBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    fetch("/multiBarChart/")
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('multipleBarChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(data[Object.keys(data)[0]]),
+                    datasets: Object.keys(data).map((severity, index) => ({
+                        label: severity,
+                        data: Object.values(data[severity]),
+                        backgroundColor: [
+                            'rgba(29, 98, 240, 0.7)',
+                            'rgba(255, 100, 109, 0.7)',
+                            'rgba(251, 173, 76, 0.7)'
+                        ][index],
+                        borderColor: [
+                            'rgb(29, 98, 240)',
+                            'rgb(255, 100, 109)',
+                            'rgb(251, 173, 76)'
+                        ][index],
+                        borderWidth: 1
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+</script>
+{% endblock %}

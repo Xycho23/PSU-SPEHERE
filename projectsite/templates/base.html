@@ -19,6 +19,12 @@
     
     <!-- Line Awesome CDN -->
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 </head>
 <body>
     <div class="wrapper">
@@ -93,7 +99,7 @@
                                         <li>
                                             <a href="#" title="Message notification">
                                                 <div class="notif-img"> 
-                                                    <img src="../assets/img/profile2.jpg" alt="Profile Image of User">
+                                                    <img src="{% static 'img/profile2.jpg' %}" alt="Profile Image of User">
                                                 </div>
                                                 <div class="notif-content">
                                                     <span class="block">
@@ -176,16 +182,19 @@
                                 <ul class="nav">
                                     <li>
                                         <a href="#profile">
+                                            <i class="fas fa-user mr-2"></i>
                                             <span class="link-collapse">My Profile</span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="#edit">
+                                            <i class="fas fa-edit mr-2"></i>
                                             <span class="link-collapse">Edit Profile</span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="#settings">
+                                            <i class="fas fa-cog mr-2"></i>
                                             <span class="link-collapse">Settings</span>
                                         </a>
                                     </li>
@@ -195,38 +204,38 @@
                     </div>
                     <ul class="nav sidebar-nav">
                         <li class="nav-item">
-                            <a href="index.html">
-                                <i class="la la-dashboard"></i>
+                            <a href="{% url 'chart' %}">
+                                <i class="fas fa-tachometer-alt"></i>
                                 <p>Dashboard</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{% url 'organization-list' %}">
-                                <i class="la la-table"></i>
+                                <i class="fas fa-sitemap"></i>
                                 <p>Organization</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{% url 'orgmember-list' %}">
-                                <i class="la la-users"></i>
+                                <i class="fas fa-users"></i>
                                 <p>Org Members</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{% url 'student-list' %}">
-                                <i class="la la-user"></i>
+                                <i class="fas fa-user-graduate"></i>
                                 <p>Student</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{% url 'college-list' %}">
-                                <i class="la la-university"></i>
+                                <i class="fas fa-university"></i>
                                 <p>College</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{% url 'program-list' %}">
-                                <i class="la la-graduation-cap"></i>
+                                <i class="fas fa-graduation-cap"></i>
                                 <p>Program</p>
                             </a>
                         </li>

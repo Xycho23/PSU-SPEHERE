@@ -6,7 +6,7 @@ class HomePageView(TemplateView):
     template_name = 'home.html'
 
 class ChartView(TemplateView):
-    template_name = 'charts.html'
+    template_name = 'chart.html'  # Update this line to use chart.html
 
 class PieCountbySeverity(TemplateView):
     template_name = 'pie_severity.html'
@@ -18,7 +18,7 @@ class MultilineIncidentTop3Country(TemplateView):
     template_name = 'multiline_top3.html'
 
 def multipleBarbySeverity(request):
-    return render(request, 'multiple_bar.html')
+    return render(request, 'multiple_bar.html')  # Template will now be found in global templates directory
 
 def map_station(request):
     return render(request, 'map.html')

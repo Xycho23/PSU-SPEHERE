@@ -1,0 +1,9 @@
+.chart-container {
+    position: relative;
+    width: 100%;
+}
+
+#pieChart, #doughnutChart {
+    width: 50% !important;
+    height: 50% !important;
+}
