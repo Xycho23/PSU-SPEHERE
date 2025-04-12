@@ -4,12 +4,7 @@
   var lineChart = document.getElementById("lineChart").getContext("2d");
   var barChart = document.getElementById("barChart").getContext("2d");
   var pieChart = document.getElementById("pieChart").getContext("2d");
-  var doughnutChart = document.getElementById("doughnutChart").getContext("2d");
-  var radarChart = document.getElementById("radarChart").getContext("2d");
-  var bubbleChart = document.getElementById("bubbleChart").getContext("2d");
   var multipleLineChart = document.getElementById("multipleLineChart").getContext("2d");
-  var multipleBarChart = document.getElementById("multipleBarChart").getContext("2d");
-  var htmlLegendsChart = document.getElementById("htmlLegendsChart").getContext("2d");
 
   // Dynamic Line Chart Implementation
   fetch("/lineChart/")
@@ -21,7 +16,7 @@
       new Chart(lineChart, {
         type: "line",
         data: {
-          labels: months,  // Dynamically inserting month names
+          labels: months, // Dynamically inserting month names
           datasets: [{
             label: "Active Users",
             borderColor: "#1d7af3",
@@ -62,137 +57,130 @@
         }
       });
     })
-    .catch((error) => console.error("Error:", error));
-
-  // Bar Chart
-  var myBarChart = new Chart(barChart, {
-    type: "bar",
-    data: {
-      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-      datasets: [{
-        label: "Sales",
-        backgroundColor: "rgb(23, 125, 255)",
-        borderColor: "rgb(23, 125, 255)",
-        data: [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 41]
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        yAxes: [{
-          ticks: {
-            beginAtZero: true
-          }
-        }]
-      }
-    }
-  });
+    .catch((error) => console.error("Error fetching line chart data:", error));
 
   // Dynamic Pie Chart Implementation
-  var counts = Object.values(data);  // Assuming data is fetched dynamically
-  console.log("call");
+  fetch("/pieChart/")
+    .then((response) => response.json())
+    .then((data) => {
+      var severityLevels = Object.keys(data);
+      var counts = Object.values(data);
 
-  new Chart(pieChart, {
-    type: "pie",
+      new Chart(pieChart, {
+        type: "pie",
+        data: {
+          datasets: [{
+            data: counts,
+            backgroundColor: ["#1d7af3", "#f3545d", "#fda94b"],
+            borderWidth: 0,
+          }],
+          labels: severityLevels, // Dynamically inserting severity levels
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          legend: {
+            position: "bottom",
+            labels: {
+              fontColor: "rgb(154, 154, 154)",
+              fontSize: 11,
+              usePointStyle: true,
+              padding: 20,
+            }
+          },
+          pieceLabel: {
+            render: "percentage",
+            fontColor: "white",
+            fontSize: 14,
+          },
+          tooltips: false,
+          layout: {
+            padding: { left: 20, right: 20, top: 20, bottom: 20 },
+          }
+        }
+      });
+    })
+    .catch((error) => console.error("Error fetching pie chart data:", error));
+
+  // Commented out the existing multiline chart generation block
+  /*
+  var myMultipleLineChart = new Chart(multipleLineChart, {
+    type: "line",
     data: {
-      datasets: [{
-        data: counts,
-        backgroundColor: ["#1d7af3", "#f3545d", "#fda94b"],
-        borderWidth: 0,
-      }],
-      labels: severitylevels,  // Assuming severitylevels is defined
+      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      datasets: [
+        {
+          label: "Dataset 1",
+          borderColor: "#1d7af3",
+          data: [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 41],
+        },
+        {
+          label: "Dataset 2",
+          borderColor: "#f3545d",
+          data: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+        },
+      ],
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      legend: {
-        position: "bottom",
-        labels: {
-          fontColor: "rgb(154, 154, 154)",
-          fontSize: 11,
-          usePointStyle: true,
-          padding: 20,
-        }
-      },
-      pieceLabel: {
-        render: "percentage",
-        fontColor: "white",
-        fontSize: 14,
-      },
-      tooltips: false,
-      layout: {
-        padding: { left: 20, right: 20, top: 20, bottom: 20 },
-      }
-    }
+    },
   });
+  */
 
-  // Event Listeners for All Charts
-  lineChart.canvas.addEventListener("click", function (event) {
-    var activePoints = myLineChart.getElementsAtEvent(event);
-    if (activePoints.length > 0) {
-      var clickedIndex = activePoints[0]._index;
-      console.log("You clicked on month: " + myLineChart.data.labels[clickedIndex]);
-    }
-  });
+  // Replaced with dynamic multiline chart generation
+  fetch("multipleLineChart.json")
+    .then(response => response.json())
+    .then(data => {
+      // Extract data for each dataset
+      var incidentCounts1 = [];
+      var incidentCounts2 = [];
+      var incidentCounts3 = [];
+      // Add more arrays as needed for additional datasets
 
-  barChart.canvas.addEventListener("click", function (event) {
-    var activePoints = myBarChart.getElementsAtEvent(event);
-    if (activePoints.length > 0) {
-      var clickedIndex = activePoints[0]._index;
-      console.log("You clicked on the month: " + myBarChart.data.labels[clickedIndex]);
-    }
-  });
+      // Populate the arrays with data from the JSON response
+      data.forEach((entry) => {
+        incidentCounts1.push(entry.dataset1);
+        incidentCounts2.push(entry.dataset2);
+        incidentCounts3.push(entry.dataset3);
+        // Add more datasets as needed
+      });
 
-  doughnutChart.canvas.addEventListener("click", function (event) {
-    var activePoints = myDoughnutChart.getElementsAtEvent(event);
-    if (activePoints.length > 0) {
-      var clickedIndex = activePoints[0]._index;
-      console.log("You clicked on segment: " + myDoughnutChart.data.labels[clickedIndex]);
-    }
-  });
-
-  radarChart.canvas.addEventListener("click", function (event) {
-    var activePoints = myRadarChart.getElementsAtEvent(event);
-    if (activePoints.length > 0) {
-      var clickedIndex = activePoints[0]._index;
-      console.log("You clicked on category: " + myRadarChart.data.labels[clickedIndex]);
-    }
-  });
-
-  bubbleChart.canvas.addEventListener("click", function (event) {
-    var activePoints = myBubbleChart.getElementsAtEvent(event);
-    if (activePoints.length > 0) {
-      var clickedIndex = activePoints[0]._index;
-      console.log("You clicked on bubble: " + myBubbleChart.data.datasets[0].data[clickedIndex].x + ", " + myBubbleChart.data.datasets[0].data[clickedIndex].y);
-    }
-  });
-
-  multipleLineChart.canvas.addEventListener("click", function (event) {
-    var activePoints = myMultipleLineChart.getElementsAtEvent(event);
-    if (activePoints.length > 0) {
-      var clickedIndex = activePoints[0]._index;
-      console.log("You clicked on date: " + myMultipleLineChart.data.labels[clickedIndex]);
-    }
-  });
-
-  multipleBarChart.canvas.addEventListener("click", function (event) {
-    var activePoints = myMultipleBarChart.getElementsAtEvent(event);
-    if (activePoints.length > 0) {
-      var clickedIndex = activePoints[0]._index;
-      console.log("You clicked on date: " + myMultipleBarChart.data.labels[clickedIndex]);
-    }
-  });
-
-  htmlLegendsChart.canvas.addEventListener("click", function (event) {
-    var activePoints = myHtmlLegendsChart.getElementsAtEvent(event);
-    if (activePoints.length > 0) {
-      var clickedIndex = activePoints[0]._index;
-      console.log("You clicked on legend: " + myHtmlLegendsChart.data.labels[clickedIndex]);
-    }
-  });
-
-  // Ensure dynamic loading of chart data function
-  loadChartData();
+      new Chart(multipleLineChart, {
+        type: "line",
+        data: {
+          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+          datasets: [
+            {
+              label: "Dataset 1",
+              borderColor: "#1d7af3",
+              data: incidentCounts1,
+            },
+            {
+              label: "Dataset 2",
+              borderColor: "#f3545d",
+              data: incidentCounts2,
+            },
+            {
+              label: "Dataset 3",
+              borderColor: "#fda94b",
+              data: incidentCounts3,
+            },
+            // Add more datasets as needed
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          legend: {
+            position: "bottom",
+            labels: {
+              fontColor: "#1d7af3",
+            },
+          },
+        },
+      });
+    })
+    .catch(error => console.error("Error fetching multiline chart data:", error));
 </script>
 {% endblock %}

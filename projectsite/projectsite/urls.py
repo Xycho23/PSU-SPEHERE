@@ -1,34 +1,21 @@
-"""
-URL configuration for projectsite project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path
-from studentorgs.views import HomePageView, OrganizationList, OrganizationCreateView, OrganizationUpdateView, OrganizationDeleteView
-from studentorgs.views import OrgMemberList, OrgMemberCreateView, OrgMemberUpdateView, OrgMemberDeleteView
-from studentorgs.views import StudentList, StudentCreateView, StudentUpdateView, StudentDeleteView
-from studentorgs.views import CollegeList, CollegeCreateView, CollegeUpdateView, CollegeDeleteView
-from studentorgs.views import ProgramList, ProgramCreateView, ProgramUpdateView, ProgramDeleteView
-from studentorgs import views
-from fire.views import HomePageView, ChartView, PieCountbySeverity, LineCountByMonth
+from studentorgs.views import (
+    HomePageView, OrganizationList, OrganizationCreateView, OrganizationUpdateView, OrganizationDeleteView,
+    OrgMemberList, OrgMemberCreateView, OrgMemberUpdateView, OrgMemberDeleteView,
+    StudentList, StudentCreateView, StudentUpdateView, StudentDeleteView,
+    CollegeList, CollegeCreateView, CollegeUpdateView, CollegeDeleteView,
+    ProgramList, ProgramCreateView, ProgramUpdateView, ProgramDeleteView,
+    line_chart_data, pie_chart_data  # Added imports for the new views
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', HomePageView.as_view(), name='home'),
-    path('dashboard_chart', ChartView.as_view(), name='dashboard_chart'),
-    path('chart/', PieCountbySeverity, name='chart'),
+
+    # Dynamic Chart Data URLs
+    path('lineChart/', line_chart_data, name='line-chart-data'),  # Added URL for line chart data
+    path('pieChart/', pie_chart_data, name='pie-chart-data'),    # Added URL for pie chart data
 
     # Organization URLs
     path('organization_list', OrganizationList.as_view(), name='organization-list'),

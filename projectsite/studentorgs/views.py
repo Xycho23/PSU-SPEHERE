@@ -1,5 +1,4 @@
 from django.shortcuts import render
-
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
 from studentorgs.models import Organization, OrgMember, Student, College, Program
 from studentorgs.forms import OrganizationForm
@@ -8,76 +7,48 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.db import connection
 from django.http import JsonResponse
-from django.db.models.functions import ExtractMonth
-
-from django.db models import Count
 from datetime import datetime
+from django.db.models import Q
+from typing import Any
 
 @method_decorator(login_required, name='dispatch')
-# Home Page View
 class HomePageView(ListView):
     model = Organization
     context_object_name = 'home'
     template_name = 'home.html'
 
-class ChartView(ListView);
-    template_name = 'chart.html'
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        return context
-
-    def get queryset(self, *args, **kwargs):
-        pass
-
-def PieCountbySeverity(request):
-    query = ' ' '
-    SELECT severity_level, COUNT(*) as count
-    FROM fire incident
-    GROUP BY severity_level
-    ' ' '
-    data = {}
-    with connection.cursor() as cursor:
-        cursor.execute(query)
-        rows = cursor.fetchall()
-        
-    if rows:
-        data = {severity: count for severity, count in rows}
-    else:
-        data = {}
-    return JsonResponse(data)
-
-def LineCountByMonth (request):
+# View to provide data for the dynamic line chart
+def line_chart_data(request):
     current_year = datetime.now().year
     result = {month: 0 for month in range(1, 13)}
 
-    incidents_per_month = Incident.objects.filter (date_time__year=current_year) \ .values_list('date_time', flat=True)
+    # Example: Replace this with your actual model and field for filtering
+    incidents_per_month = Organization.objects.filter(created_at__year=current_year).values_list('created_at', flat=True)
     for date_time in incidents_per_month:
         month = date_time.month
         result[month] += 1
 
     month_names = {
-        1: 'January',
-        2: 'February',
-        3: 'March',
-        4: 'April',
-        5: 'May',
-        6: 'June',
-        7: 'July',
-        8: 'August',
-        9: 'September',
-        10: 'October',
-        11: 'November',
-        12: 'December'
+        1: 'January', 2: 'February', 3: 'March', 4: 'April', 5: 'May', 6: 'June',
+        7: 'July', 8: 'August', 9: 'September', 10: 'October', 11: 'November', 12: 'December'
     }
 
-    result_with_month_names ={
-        [int (month_names)]: count for month, count in result.items()}
-        return JsonResponse(result_with_month_names)
-        
-from typing import Any
-from django.db.models.query import QuerySet
-from django.db.models import Q
+    result_with_month_names = {month_names[month]: count for month, count in result.items()}
+    return JsonResponse(result_with_month_names)
+
+# View to provide data for the dynamic pie chart
+def pie_chart_data(request):
+    query = """
+    SELECT severity_level, COUNT(*) as count
+    FROM studentorgs_organization  -- Replace with your actual table name
+    GROUP BY severity_level
+    """
+    data = {}
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        data = {severity: count for severity, count in rows}
+    return JsonResponse(data)
 
 # Organization Views
 class OrganizationList(ListView):
@@ -85,7 +56,6 @@ class OrganizationList(ListView):
     context_object_name = 'organization'
     template_name = 'organization_list.html'
     paginate_by = 5
-
 
 class OrganizationCreateView(CreateView):
     model = Organization
@@ -111,7 +81,6 @@ class OrgMemberList(ListView):
     template_name = 'orgmember_list.html'
     paginate_by = 5
 
-
 class OrgMemberCreateView(CreateView):
     model = OrgMember
     fields = '__all__'
@@ -135,7 +104,6 @@ class StudentList(ListView):
     context_object_name = 'student'
     template_name = 'student_list.html'
     paginate_by = 5
-
 
 class StudentCreateView(CreateView):
     model = Student
@@ -161,10 +129,10 @@ class CollegeList(ListView):
     template_name = 'college_list.html'
     paginate_by = 5
 
-    def get_queryset(self, *args, **kwargs):
-        qs = super(CollegeList, self).get_queryset(*args, **kwargs)
-        if self.request.GET.get("q") is not None:
-            query = self.request.GET.get('q')
+    def get_queryset(self):
+        qs = super().get_queryset()
+        query = self.request.GET.get("q")
+        if query:
             qs = qs.filter(Q(college_name__icontains=query))
         return qs
 
@@ -191,7 +159,6 @@ class ProgramList(ListView):
     context_object_name = 'program'
     template_name = 'program_list.html'
     paginate_by = 5
-
 
 class ProgramCreateView(CreateView):
     model = Program
