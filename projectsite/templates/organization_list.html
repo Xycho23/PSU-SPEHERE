@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Organizations</h4>
+        <ul class="breadcrumbs">
+            <li class="nav-home">
+                <a href="{% url 'home' %}">
+                    <i class="flaticon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Organizations</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <h4 class="card-title">Organization List</h4>
+                        <a href="{% url 'organization-create' %}" class="btn btn-primary btn-round ml-auto">
+                            <i class="fa fa-plus"></i>
+                            Add Organization
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped mt-3">
+                            <thead>
+                                <tr>
+                                    <th>Organization Name</th>
+                                    <th>College</th>
+                                    <th>Description</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for org in organization %}
+                                <tr>
+                                    <td>{{ org.name }}</td>
+                                    <td>{{ org.college }}</td>
+                                    <td>{{ org.description }}</td>
+                                    <td>
+                                        <div class="form-button-action">
+                                            <a href="{% url 'organization-update' org.pk %}" class="btn btn-link btn-primary btn-lg">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <a href="{% url 'organization-delete' org.pk %}" class="btn btn-link btn-danger">
+                                                <i class="fa fa-times"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if organization.has_other_pages %}
+                    <div class="pagination float-right">
+                        <ul class="pagination">
+                            {% if organization.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ organization.previous_page_number }}">&laquo;</a>
+                            </li>
+                            {% endif %}
+                            {% for i in organization.paginator.page_range %}
+                            <li class="page-item {% if organization.number == i %}active{% endif %}">
+                                <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                            </li>
+                            {% endfor %}
+                            {% if organization.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ organization.next_page_number }}">&raquo;</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

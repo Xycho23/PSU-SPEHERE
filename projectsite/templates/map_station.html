@@ -5,10 +5,10 @@
 
 <div class="page-inner">
   <div class="page-header">
-    <h4 class="page-title">Dashboard</h4>
+    <h4 class="page-title">Fire Station Map</h4>
     <ul class="breadcrumbs">
       <li class="nav-home">
-        <a href="#">
+        <a href="{% url 'home' %}">
           <i class="flaticon-home"></i>
         </a>
       </li>
@@ -16,13 +16,7 @@
         <i class="flaticon-right-arrow"></i>
       </li>
       <li class="nav-item">
-        <a href="#">Maps</a>
-      </li>
-      <li class="separator">
-        <i class="flaticon-right-arrow"></i>
-      </li>
-      <li class="nav-item">
-        <a href="#">Stations</a>
+        <a href="{% url 'map-station' %}">Fire Station Map</a>
       </li>
     </ul>
   </div>
@@ -46,7 +40,7 @@
 <script>
   var map = L.map('map').setView([9.81644, 118.72239], 13);
   var truckIcon = L.icon({
-    iconUrl: '{% static "img/firetruck.png" %}', // Replace with the path to your red marker icon
+    iconUrl: "{% static 'assets/img/firetruck.png' %}", // Updated static path
     iconSize: [50, 50], // Adjust the size as needed
   });
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

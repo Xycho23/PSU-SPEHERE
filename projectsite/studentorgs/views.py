@@ -9,18 +9,37 @@ from django.db import connection
 from django.http import JsonResponse
 from datetime import datetime
 from django.db.models import Q
+from django.db.models.functions import ExtractMonth
+from django.db.models import Count
 from typing import Any
-from fireincident.models import Locations, Incident, FireStation  # Updated import
+from fireincident.models import Locations, Incident, FireStation, FireIncident
+from django.views import View
 
 class ChartView(ListView):
     template_name = 'chart.html'
+    model = FireIncident
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        return context
+        
+        # Severity data for pie chart
+        severity_counts = FireIncident.objects.values('severity_level').annotate(count=Count('id'))
+        context['severity_data'] = {item['severity_level']: item['count'] for item in severity_counts}
+        
+        # Monthly data for line chart
+        current_year = datetime.now().year
+        monthly_counts = FireIncident.objects.filter(date__year=current_year) \
+            .annotate(month=ExtractMonth('date')) \
+            .values('month') \
+            .annotate(count=Count('id')) \
+            .order_by('month')
+        
+        months = {1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun',
+                 7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec'}
+        context['monthly_data'] = {months[item['month']]: item['count'] 
+                                 for item in monthly_counts}
 
-    def get_queryset(self, *args, **kwargs):
-        pass
+        return context
 
 @method_decorator(login_required, name='dispatch')
 class HomePageView(ListView):
@@ -28,72 +47,122 @@ class HomePageView(ListView):
     context_object_name = 'home'
     template_name = 'home.html'
 
-# View to provide data for the dynamic line chart
-def line_chart_data(request):
-    current_year = datetime.now().year
-    result = {month: 0 for month in range(1, 13)}
+class PieCountbySeverity(TemplateView):
+    template_name = 'chart.html'
 
-    incidents_per_month = Organization.objects.filter(created_at__year=current_year).values_list('created_at', flat=True)
-    for date_time in incidents_per_month:
-        month = date_time.month
-        result[month] += 1
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        severity_counts = FireIncident.objects.values('severity_level').annotate(count=Count('id'))
+        context['severity_data'] = {item['severity_level']: item['count'] for item in severity_counts}
+        return context
 
-    month_names = {
-        1: 'January', 2: 'February', 3: 'March', 4: 'April', 5: 'May', 6: 'June',
-        7: 'July', 8: 'August', 9: 'September', 10: 'October', 11: 'November', 12: 'December'
-    }
+class LineCountbyMonth(View):
+    def get(self, request, *args, **kwargs):
+        current_year = datetime.now().year
+        result = {month: 0 for month in range(1, 13)}
+        incidents_per_month = Incident.objects.filter(date_time__year=current_year) \
+            .annotate(month=ExtractMonth('date_time')) \
+            .values('month') \
+            .annotate(count=Count('id'))
 
-    result_with_month_names = {month_names[month]: count for month, count in result.items()}
-    return JsonResponse(result_with_month_names)
+        for entry in incidents_per_month:
+            result[entry['month']] = entry['count']
 
-# View to provide data for the dynamic pie chart
-def pie_chart_data(request):
-    query = """
-    SELECT severity_level, COUNT(*) as count
-    FROM studentorgs_organization
-    GROUP BY severity_level
-    """
-    data = {}
-    with connection.cursor() as cursor:
-        cursor.execute(query)
-        rows = cursor.fetchall()
-        data = {severity: count for severity, count in rows}
-    return JsonResponse(data)
+        month_names = {
+            1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May', 6: 'Jun',
+            7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'
+        }
+        result_with_month_names = {month_names[month]: count for month, count in result.items()}
+        return JsonResponse(result_with_month_names)
 
-# View to provide data for the multiple bar chart by severity
-def multipleBarbySeverity(request):
-    query = '''
+class MultilineIncidentTop3Country(View):
+    def get(self, request, *args, **kwargs):
+        query = '''
         SELECT
-            fi.severity_level,
-            strftime('%m', fi.date_time) AS month,
-            COUNT(fi.id) AS incident_count
+            c.college_name as location,
+            strftime('%m', so.created_at) AS month,
+            COUNT(so.id) AS org_count
         FROM
-            fire_incident fi
-        GROUP BY fi.severity_level, month
-    '''
-    
-    with connection.cursor() as cursor:
-        cursor.execute(query)
-        rows = cursor.fetchall()
-    
-    result = {}
-    months = set(str(i).zfill(2) for i in range(1, 13))
-    
-    for row in rows:
-        level = str(row[0])  # Ensure the severity level is a string
-        month = row[1]
-        total_incidents = row[2]
-        
-        if level not in result:
-            result[level] = {month: 0 for month in months}
-        
-        result[level][month] = total_incidents
-    
-    # Sort months within each severity level
-    for level in result:
-        result[level] = dict(sorted(result[level].items()))
-    
-    return JsonResponse(result)
+            studentorgs_organization so
+        JOIN
+            studentorgs_college c ON so.college_id = c.id
+        WHERE
+            c.college_name IN (
+                SELECT
+                    c2.college_name
+                FROM
+                    studentorgs_organization so2
+                JOIN
+                    studentorgs_college c2 ON so2.college_id = c2.id
+                WHERE
+                    strftime('%Y', so2.created_at) = strftime('%Y', 'now')
+                GROUP BY
+                    c2.college_name
+                ORDER BY
+                    COUNT(so2.id) DESC
+                LIMIT 3
+            )
+            AND strftime('%Y', so.created_at) = strftime('%Y', 'now')
+        GROUP BY
+            c.college_name, month
+        ORDER BY
+            c.college_name, month;
+        '''
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+            rows = cursor.fetchall()
+
+        result = {}
+        months = set(str(i).zfill(2) for i in range(1, 13))
+
+        for row in rows:
+            country = row[0]
+            month = row[1]
+            total_incidents = row[2]
+            if country not in result:
+                result[country] = {month: 0 for month in months}
+            result[country][month] = total_incidents
+
+        while len(result) < 3:
+            missing_country = f"Country {len(result) + 1}"
+            result[missing_country] = {month: 0 for month in months}
+
+        for country in result:
+            result[country] = dict(sorted(result[country].items()))
+
+        return JsonResponse(result)
+
+class multipleBarbySeverity(View):
+    def get(self, request, *args, **kwargs):
+        query = '''
+        SELECT
+            so.severity_level,
+            strftime('%m', so.created_at) AS month,
+            COUNT(so.id) AS incident_count
+        FROM
+            studentorgs_organization so
+        GROUP BY
+            so.severity_level, month
+        '''
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+            rows = cursor.fetchall()
+
+        result = {}
+        months = set(str(i).zfill(2) for i in range(1, 13))
+
+        for row in rows:
+            level = str(row[0])
+            month = row[1]
+            total_incidents = row[2]
+            if level not in result:
+                result[level] = {month: 0 for month in months}
+            result[level][month] = total_incidents
+
+        for level in result:
+            result[level] = dict(sorted(result[level].items()))
+
+        return JsonResponse(result)
 
 def map_station(request):
     fireStations = FireStation.objects.values('name', 'latitude', 'longitude')

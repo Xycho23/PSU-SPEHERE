@@ -39,9 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'studentorgs',
-    'widget_tweaks',
-    'fire',
-    'fireincident',
+    'fireincident.apps.FireincidentConfig',  # Keep only this one entry for fireincident
 ]
 
 MIDDLEWARE = [

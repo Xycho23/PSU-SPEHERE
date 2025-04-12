@@ -1,28 +1,31 @@
 from django.contrib import admin
 from django.urls import path
 from studentorgs.views import (
-    HomePageView, OrganizationList, OrganizationCreateView, OrganizationUpdateView, OrganizationDeleteView,
+    HomePageView, ChartView, PieCountbySeverity, LineCountbyMonth,
+    MultilineIncidentTop3Country, multipleBarbySeverity,
+    OrganizationList, OrganizationCreateView, OrganizationUpdateView, OrganizationDeleteView,
     OrgMemberList, OrgMemberCreateView, OrgMemberUpdateView, OrgMemberDeleteView,
     StudentList, StudentCreateView, StudentUpdateView, StudentDeleteView,
     CollegeList, CollegeCreateView, CollegeUpdateView, CollegeDeleteView,
-    ProgramList, ProgramCreateView, ProgramUpdateView, ProgramDeleteView,
-    line_chart_data, pie_chart_data, ChartView
+    ProgramList, ProgramCreateView, ProgramUpdateView, ProgramDeleteView
 )
-from fireincident.views import HomePageView, ChartView, PieCountbySeverity, LineCountbyMonth, MultilineIncidentTop3Country, multipleBarbySeverity, map_station  # Updated import statement
+from fireincident.views import map_station
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', HomePageView.as_view(), name='home'),
 
     # Dynamic Chart Data URLs
-    path('lineChart/', line_chart_data, name='line-chart-data'),
-    path('pieChart/', pie_chart_data, name='pie-chart-data'),
+    path('lineChart/', LineCountbyMonth.as_view(), name='lineChart'),
+    path('chart/', PieCountbySeverity.as_view(), name='chart'),
+    path('multilineChart/', MultilineIncidentTop3Country.as_view(), name='multilineChart'),
+    path('multiBarChart/', multipleBarbySeverity.as_view(), name='multiBarChart'),
 
     # Organization URLs
-    path('organization_list', OrganizationList.as_view(), name='organization-list'),
-    path('organization_list/add', OrganizationCreateView.as_view(), name='organization-add'),
-    path('organization_list/<pk>', OrganizationUpdateView.as_view(), name='organization-update'),
-    path('organization_list/<pk>/delete', OrganizationDeleteView.as_view(), name='organization-delete'),
+    path('organization_list/', OrganizationList.as_view(), name='organization-list'),
+    path('organization/add/', OrganizationCreateView.as_view(), name='organization-create'),
+    path('organization/<int:pk>/update/', OrganizationUpdateView.as_view(), name='organization-update'),
+    path('organization/<int:pk>/delete/', OrganizationDeleteView.as_view(), name='organization-delete'),
 
     # OrgMember URLs
     path('orgmember_list', OrgMemberList.as_view(), name='orgmember-list'),
@@ -49,9 +52,7 @@ urlpatterns = [
     path('program_list/<pk>/delete', ProgramDeleteView.as_view(), name='program-delete'),
 
     # Fire Chart URLs
-    path('multilineChart/', MultilineIncidentTop3Country.as_view(), name='chart'),  # Updated URL
-    path('multiBarChart/', ChartView.as_view(), name='chart'),  # Updated URL
-    path('stations', map_station, name='map-station'),  # Added URL for map_station
+    path('stations', map_station, name='map-station'),
 
     # Dashboard Chart URL
     path('dashboard_chart', ChartView.as_view(), name='dashboard-chart'),
