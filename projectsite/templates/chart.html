@@ -5,6 +5,7 @@
   var barChart = document.getElementById("barChart").getContext("2d");
   var pieChart = document.getElementById("pieChart").getContext("2d");
   var multipleLineChart = document.getElementById("multipleLineChart").getContext("2d");
+  var multipleBarChart = document.getElementById("multipleBarChart").getContext("2d");
 
   // Dynamic Line Chart Implementation
   fetch("/lineChart/")
@@ -102,7 +103,7 @@
     })
     .catch((error) => console.error("Error fetching pie chart data:", error));
 
-  // Commented out the existing multiline chart generation block
+  // Commented out static multiline chart code block
   /*
   var myMultipleLineChart = new Chart(multipleLineChart, {
     type: "line",
@@ -128,46 +129,28 @@
   });
   */
 
-  // Replaced with dynamic multiline chart generation
-  fetch("multipleLineChart.json")
-    .then(response => response.json())
-    .then(data => {
-      // Extract data for each dataset
-      var incidentCounts1 = [];
-      var incidentCounts2 = [];
-      var incidentCounts3 = [];
-      // Add more arrays as needed for additional datasets
+  // Dynamic Multiline Chart Implementation
+  fetch("/multilineChart/")
+    .then((response) => response.json())
+    .then((data) => {
+      var labels = Object.keys(data); // Extract labels (e.g., months)
+      var datasets = [];
 
-      // Populate the arrays with data from the JSON response
-      data.forEach((entry) => {
-        incidentCounts1.push(entry.dataset1);
-        incidentCounts2.push(entry.dataset2);
-        incidentCounts3.push(entry.dataset3);
-        // Add more datasets as needed
+      // Process each dataset dynamically
+      Object.entries(data).forEach(([label, values], index) => {
+        datasets.push({
+          label: label,
+          borderColor: ["#1d7af3", "#f3545d", "#fda94b", "#50a5d5"][index % 4], // Rotate colors
+          data: Object.values(values),
+          fill: false,
+        });
       });
 
       new Chart(multipleLineChart, {
         type: "line",
         data: {
-          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-          datasets: [
-            {
-              label: "Dataset 1",
-              borderColor: "#1d7af3",
-              data: incidentCounts1,
-            },
-            {
-              label: "Dataset 2",
-              borderColor: "#f3545d",
-              data: incidentCounts2,
-            },
-            {
-              label: "Dataset 3",
-              borderColor: "#fda94b",
-              data: incidentCounts3,
-            },
-            // Add more datasets as needed
-          ],
+          labels: labels, // Dynamically inserting labels
+          datasets: datasets, // Dynamically inserting datasets
         },
         options: {
           responsive: true,
@@ -175,12 +158,19 @@
           legend: {
             position: "bottom",
             labels: {
-              fontColor: "#1d7af3",
+              fontColor: "#333",
+              fontSize: 12,
             },
+          },
+          title: {
+            display: true,
+            text: "Dynamic Multiline Chart",
           },
         },
       });
     })
-    .catch(error => console.error("Error fetching multiline chart data:", error));
+    .catch((error) => console.error("Error fetching multiline chart data:", error));
+
+  loadCharData();
 </script>
 {% endblock %}

@@ -6,16 +6,17 @@ from studentorgs.views import (
     StudentList, StudentCreateView, StudentUpdateView, StudentDeleteView,
     CollegeList, CollegeCreateView, CollegeUpdateView, CollegeDeleteView,
     ProgramList, ProgramCreateView, ProgramUpdateView, ProgramDeleteView,
-    line_chart_data, pie_chart_data  # Added imports for the new views
+    line_chart_data, pie_chart_data
 )
+from fire.views import HomePageView, ChartView, PieCountbySeverity, LineCountbyMonth, MultilineIncidentTop3Country, multipleBarbySeverity  # Updated import
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', HomePageView.as_view(), name='home'),
 
     # Dynamic Chart Data URLs
-    path('lineChart/', line_chart_data, name='line-chart-data'),  # Added URL for line chart data
-    path('pieChart/', pie_chart_data, name='pie-chart-data'),    # Added URL for pie chart data
+    path('lineChart/', line_chart_data, name='line-chart-data'),
+    path('pieChart/', pie_chart_data, name='pie-chart-data'),
 
     # Organization URLs
     path('organization_list', OrganizationList.as_view(), name='organization-list'),
@@ -46,4 +47,8 @@ urlpatterns = [
     path('program_list/add', ProgramCreateView.as_view(), name='program-add'),
     path('program_list/<pk>', ProgramUpdateView.as_view(), name='program-update'),
     path('program_list/<pk>/delete', ProgramDeleteView.as_view(), name='program-delete'),
+
+    # Fire Chart URLs
+    path('multilineChart/', MultilineIncidentTop3Country, name='chart'),  # Existing URL
+    path('multiBarChart/', multipleBarbySeverity, name='chart'),          # Added URL
 ]

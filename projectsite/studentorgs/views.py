@@ -22,7 +22,6 @@ def line_chart_data(request):
     current_year = datetime.now().year
     result = {month: 0 for month in range(1, 13)}
 
-    # Example: Replace this with your actual model and field for filtering
     incidents_per_month = Organization.objects.filter(created_at__year=current_year).values_list('created_at', flat=True)
     for date_time in incidents_per_month:
         month = date_time.month
@@ -40,7 +39,7 @@ def line_chart_data(request):
 def pie_chart_data(request):
     query = """
     SELECT severity_level, COUNT(*) as count
-    FROM studentorgs_organization  -- Replace with your actual table name
+    FROM studentorgs_organization
     GROUP BY severity_level
     """
     data = {}
@@ -49,6 +48,41 @@ def pie_chart_data(request):
         rows = cursor.fetchall()
         data = {severity: count for severity, count in rows}
     return JsonResponse(data)
+
+# View to provide data for the multiple bar chart by severity
+def multipleBarbySeverity(request):
+    query = '''
+        SELECT
+            fi.severity_level,
+            strftime('%m', fi.date_time) AS month,
+            COUNT(fi.id) AS incident_count
+        FROM
+            fire_incident fi
+        GROUP BY fi.severity_level, month
+    '''
+    
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        rows = cursor.fetchall()
+    
+    result = {}
+    months = set(str(i).zfill(2) for i in range(1, 13))
+    
+    for row in rows:
+        level = str(row[0])  # Ensure the severity level is a string
+        month = row[1]
+        total_incidents = row[2]
+        
+        if level not in result:
+            result[level] = {month: 0 for month in months}
+        
+        result[level][month] = total_incidents
+    
+    # Sort months within each severity level
+    for level in result:
+        result[level] = dict(sorted(result[level].items()))
+    
+    return JsonResponse(result)
 
 # Organization Views
 class OrganizationList(ListView):
