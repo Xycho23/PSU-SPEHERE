@@ -22,10 +22,12 @@ from studentorgs.views import StudentList, StudentCreateView, StudentUpdateView,
 from studentorgs.views import CollegeList, CollegeCreateView, CollegeUpdateView, CollegeDeleteView
 from studentorgs.views import ProgramList, ProgramCreateView, ProgramUpdateView, ProgramDeleteView
 from studentorgs import views
+from fire.views import HomePageView, ChartView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', HomePageView.as_view(), name='home'),
+    path('dashboard_chart', ChartView.as_view(), name='dashboard_chart'),
 
     # Organization URLs
     path('organization_list', OrganizationList.as_view(), name='organization-list'),
