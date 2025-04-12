@@ -4,32 +4,43 @@ from django.views.generic import TemplateView, ListView, CreateView, UpdateView,
 from studentorgs.models import Organization, OrgMember, Student, College, Program
 from studentorgs.forms import OrganizationForm
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
+@method_decorator(login_required, name='dispatch')
 # Home Page View
-class HomePageView(TemplateView):
+class HomePageView(ListView):
+    model = Organization
+    context_object_name = 'home'
     template_name = 'home.html'
+
+from typing import Any
+from django.db.models.query import QuerySet
+from django.db.models import Q
 
 # Organization Views
 class OrganizationList(ListView):
     model = Organization
+    context_object_name = 'organization'
     template_name = 'organization_list.html'
     paginate_by = 5
 
+
 class OrganizationCreateView(CreateView):
     model = Organization
-    fields = ['name', 'description']
-    template_name = 'organization_form.html'
+    form_class = OrganizationForm
+    template_name = 'org_add.html'
     success_url = reverse_lazy('organization-list')
 
 class OrganizationUpdateView(UpdateView):
     model = Organization
-    fields = ['name', 'description']
-    template_name = 'organization_form.html'
+    form_class = OrganizationForm
+    template_name = 'org_edit.html'
     success_url = reverse_lazy('organization-list')
 
 class OrganizationDeleteView(DeleteView):
     model = Organization
-    template_name = 'organization_confirm_delete.html'
+    template_name = 'org_del.html'
     success_url = reverse_lazy('organization-list')
 
 # OrgMember Views
@@ -38,6 +49,7 @@ class OrgMemberList(ListView):
     context_object_name = 'orgmember'
     template_name = 'orgmember_list.html'
     paginate_by = 5
+
 
 class OrgMemberCreateView(CreateView):
     model = OrgMember
@@ -63,6 +75,7 @@ class StudentList(ListView):
     template_name = 'student_list.html'
     paginate_by = 5
 
+
 class StudentCreateView(CreateView):
     model = Student
     fields = '__all__'
@@ -87,6 +100,13 @@ class CollegeList(ListView):
     template_name = 'college_list.html'
     paginate_by = 5
 
+    def get_queryset(self, *args, **kwargs):
+        qs = super(CollegeList, self).get_queryset(*args, **kwargs)
+        if self.request.GET.get("q") is not None:
+            query = self.request.GET.get('q')
+            qs = qs.filter(Q(college_name__icontains=query))
+        return qs
+
 class CollegeCreateView(CreateView):
     model = College
     fields = '__all__'
@@ -110,6 +130,7 @@ class ProgramList(ListView):
     context_object_name = 'program'
     template_name = 'program_list.html'
     paginate_by = 5
+
 
 class ProgramCreateView(CreateView):
     model = Program

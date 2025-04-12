@@ -21,7 +21,7 @@ class Program(BaseModel):
     def __str__(self):
         return self.prog_name
 
-class Organization(BaseModel):
+class Organization(BaseModel):  # Make sure it's Organization, not Organizations
     name = models.CharField(max_length=250)
     college = models.ForeignKey(College, null=True, blank=True, on_delete=models.CASCADE)
     description = models.CharField(max_length=500)
@@ -41,7 +41,7 @@ class Student(BaseModel):
 
 class OrgMember(BaseModel):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)  # Changed from Organization to organization
     date_joined = models.DateField()
 
 class Post(models.Model):

@@ -28,32 +28,32 @@ urlpatterns = [
     path('', HomePageView.as_view(), name='home'),
 
     # Organization URLs
-    path('organizations/', OrganizationList.as_view(), name='organization-list'),
-    path('organizations/new/', OrganizationCreateView.as_view(), name='organization-create'),
-    path('organizations/<int:pk>/edit/', OrganizationUpdateView.as_view(), name='organization-update'),
-    path('organizations/<int:pk>/delete/', OrganizationDeleteView.as_view(), name='organization-delete'),
+    path('organization_list', OrganizationList.as_view(), name='organization-list'),
+    path('organization_list/add', OrganizationCreateView.as_view(), name='organization-add'),
+    path('organization_list/<pk>', OrganizationUpdateView.as_view(), name='organization-update'),
+    path('organization_list/<pk>/delete', OrganizationDeleteView.as_view(), name='organization-delete'),
 
     # OrgMember URLs
-    path('orgmembers/', OrgMemberList.as_view(), name='orgmember-list'),
-    path('orgmembers/new/', OrgMemberCreateView.as_view(), name='orgmember-create'),
-    path('orgmembers/<int:pk>/edit/', OrgMemberUpdateView.as_view(), name='orgmember-update'),
-    path('orgmembers/<int:pk>/delete/', OrgMemberDeleteView.as_view(), name='orgmember-delete'),
+    path('orgmember_list', OrgMemberList.as_view(), name='orgmember-list'),
+    path('orgmember_list/add', OrgMemberCreateView.as_view(), name='orgmember-add'),
+    path('orgmember_list/<pk>', OrgMemberUpdateView.as_view(), name='orgmember-update'),
+    path('orgmember_list/<pk>/delete', OrgMemberDeleteView.as_view(), name='orgmember-delete'),
 
     # Student URLs
-    path('students/', StudentList.as_view(), name='student-list'),
-    path('students/new/', StudentCreateView.as_view(), name='student-create'),
-    path('students/<int:pk>/edit/', StudentUpdateView.as_view(), name='student-update'),
-    path('students/<int:pk>/delete/', StudentDeleteView.as_view(), name='student-delete'),
+    path('student_list', StudentList.as_view(), name='student-list'),
+    path('student_list/add', StudentCreateView.as_view(), name='student-add'),
+    path('student_list/<pk>', StudentUpdateView.as_view(), name='student-update'),
+    path('student_list/<pk>/delete', StudentDeleteView.as_view(), name='student-delete'),
 
     # College URLs
-    path('colleges/', CollegeList.as_view(), name='college-list'),
-    path('colleges/new/', CollegeCreateView.as_view(), name='college-create'),
-    path('colleges/<int:pk>/edit/', CollegeUpdateView.as_view(), name='college-update'),
-    path('colleges/<int:pk>/delete/', CollegeDeleteView.as_view(), name='college-delete'),
+    path('college_list', CollegeList.as_view(), name='college-list'),
+    path('college_list/add', CollegeCreateView.as_view(), name='college-add'),
+    path('college_list/<pk>', CollegeUpdateView.as_view(), name='college-update'),
+    path('college_list/<pk>/delete', CollegeDeleteView.as_view(), name='college-delete'),
 
     # Program URLs
-    path('programs/', ProgramList.as_view(), name='program-list'),
-    path('programs/new/', ProgramCreateView.as_view(), name='program-create'),
-    path('programs/<int:pk>/edit/', ProgramUpdateView.as_view(), name='program-update'),
-    path('programs/<int:pk>/delete/', ProgramDeleteView.as_view(), name='program-delete'),
+    path('program_list', ProgramList.as_view(), name='program-list'),
+    path('program_list/add', ProgramCreateView.as_view(), name='program-add'),
+    path('program_list/<pk>', ProgramUpdateView.as_view(), name='program-update'),
+    path('program_list/<pk>/delete', ProgramDeleteView.as_view(), name='program-delete'),
 ]
