@@ -66,30 +66,3 @@ class Post(models.Model):
 
     def is_published(self):
         return self.status == 'published'
-
-class FireIncident(models.Model):
-    SEVERITY_CHOICES = [
-        ('Low', 'Low'),
-        ('Medium', 'Medium'),
-        ('High', 'High'),
-    ]
-    
-    severity = models.CharField(max_length=10, choices=SEVERITY_CHOICES)
-    date = models.DateField()
-    location = models.CharField(max_length=200)
-    description = models.TextField()
-
-    def __str__(self):
-        return f"Fire Incident at {self.location} on {self.date}"
-
-class FireStation(models.Model):
-    name = models.CharField(max_length=200)
-    address = models.CharField(max_length=300, null=True, blank=True)  # Made nullable
-    latitude = models.FloatField(default=0.0)
-    longitude = models.FloatField(default=0.0)
-    contact_number = models.CharField(max_length=20, null=True, blank=True)
-    email = models.EmailField(null=True, blank=True)
-    is_active = models.BooleanField(default=True)
-    
-    def __str__(self):
-        return self.name

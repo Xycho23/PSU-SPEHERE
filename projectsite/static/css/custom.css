@@ -12,6 +12,20 @@
     margin-right: 10px;
 }
 
+.sidebar-icon {
+    width: 1.5rem;
+    margin-right: 0.5rem;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.nav-item i {
+    min-width: 25px;
+    text-align: center;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
 /* User dropdown icons */
 .collapse .nav li a i {
     color: #555;
@@ -27,4 +41,61 @@
 /* Fix notification icons */
 .notif-icon i {
     color: #fff;
+}
+
+/* Icon Styles */
+.fa,
+.fas,
+.far,
+.fab,
+.bi {
+    display: inline-block;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+/* Sidebar Icon Spacing */
+.sidebar-nav i {
+    margin-right: 10px;
+    font-size: 18px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Notification Icon Styles */
+.notification-icon {
+    font-size: 20px;
+}
+
+/* Fix for Line Awesome icons */
+.la {
+    font-size: 24px;
+}
+
+/* Reset icon styles */
+.bi::before,
+.fa::before,
+.fas::before,
+.far::before,
+.fab::before,
+.la::before {
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Bootstrap Icons specific fixes */
+.bi {
+    font-size: inherit;
+    vertical-align: -0.125em;
+}
+
+/* Ensure icons are visible in sidebar */
+.sidebar-nav i,
+.sidebar-nav .bi {
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: inherit;
 }

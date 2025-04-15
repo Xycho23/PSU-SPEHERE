@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'Line Awesome';
+    src: url('../line-awesome.woff2?v=1.1.') format('woff2'),
+         url('../line-awesome.woff?v=1.1.') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+/* rest of the Line Awesome CSS content */

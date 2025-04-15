@@ -6,10 +6,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data:;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>{% block title %}PSUSphere{% endblock %}</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="{% static 'icons/bootstrap/bootstrap-icons.css' %}">
     
     <!-- Local static files -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
@@ -20,9 +26,6 @@
     <!-- Line Awesome CDN -->
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     
-    <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 </head>
@@ -30,7 +33,7 @@
     <div class="wrapper">
         <div class="main-header">
             <div class="logo-header">
-                <a href="{% url 'map-station' %}" class="logo"> <!-- Updated URL -->
+                <a href="#" class="logo"> <!-- Removed 'map-station' URL -->
                     Ready Dashboard
                 </a>
                 <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation" title="Toggle Navigation">
@@ -40,14 +43,13 @@
             </div>
             <nav class="navbar navbar-header navbar-expand-lg">
                 <div class="container-fluid">
-                    
-                    <form class="navbar-left navbar-form nav-search mr-md-3" action="">
+                    <form class="navbar-left navbar-form nav-search mr-md-3" action="{% url 'search' %}" method="GET">
                         <div class="input-group">
-                            <input type="text" placeholder="Search ..." class="form-control">
+                            <input type="text" name="q" placeholder="Search students, organizations..." class="form-control">
                             <div class="input-group-append">
-                                <span class="input-group-text">
+                                <button type="submit" class="input-group-text">
                                     <i class="la la-search search-icon"></i>
-                                </span>
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -204,7 +206,7 @@
                     </div>
                     <ul class="nav sidebar-nav">
                         <li class="nav-item">
-                            <a href="{% url 'chart' %}">
+                            <a href="{% url 'home' %}">  <!-- Changed from 'chart' to 'home' -->
                                 <i class="fas fa-tachometer-alt"></i>
                                 <p>Dashboard</p>
                             </a>
@@ -261,5 +263,7 @@
     <script src="{% static 'js/plugin/chart-circle/circles.min.js' %}"></script>
     <script src="{% static 'js/plugin/jquery-scrollbar/jquery.scrollbar.min.js' %}"></script>
     <script src="{% static 'js/ready.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
