@@ -6,9 +6,11 @@ from studentorgs.views import (
     OrgMemberList, OrgMemberCreateView, OrgMemberUpdateView, OrgMemberDeleteView,
     StudentList, StudentCreateView, StudentUpdateView, StudentDeleteView,
     CollegeList, CollegeCreateView, CollegeUpdateView, CollegeDeleteView,
-    ProgramList, ProgramCreateView, ProgramUpdateView, ProgramDeleteView
+    ProgramList, ProgramCreateView, ProgramUpdateView, ProgramDeleteView,
+    CustomLoginView
 )
-from django.contrib.auth import views as auth_views
+from django.contrib.auth.views import LogoutView
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -48,6 +50,6 @@ urlpatterns = [
     path('search/', search_view, name='search'),
 
     # Authentication URLs
-    path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
-    path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('accounts/login/', CustomLoginView.as_view(), name='login'),
+    path('accounts/logout/', login_required(LogoutView.as_view(next_page='login')), name='logout'),
 ]
