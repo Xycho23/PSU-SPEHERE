@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'studentorgs',
-    'widget_tweaks'
+    'fireincident.apps.FireincidentConfig',  # Keep only this one entry for fireincident
 ]
 
 MIDDLEWARE = [
@@ -120,29 +120,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    os.path.join(BASE_DIR, 'static')
 ]
-STATIC_ROOT = BASE_DIR / "staticfiles"
-
-# Add this if you're using whitenoise for static files in production
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-
-# Create static directory if it doesn't exist
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
-if not os.path.exists(STATIC_DIR):
-    os.makedirs(STATIC_DIR)
-
-# Add this setting
-STATICFILES_FINDERS = [
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/accounts/login/'
-LOGIN_URL = '/accounts/login/'

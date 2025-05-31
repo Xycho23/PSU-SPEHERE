@@ -33,55 +33,36 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <!-- Debug information -->
-                    <div class="debug-info" style="margin-bottom: 10px;">
-                        <p>Debug Info:</p>
-                        <p>Number of Organizations: {{ organization|length }}</p>
-                        {% if organization %}
-                            <p>First organization name: {{ organization.0.name }}</p>
-                        {% endif %}
-                    </div>
-                    
                     <div class="table-responsive">
-                        {% if organization %}
-                            <table class="table table-striped mt-3">
-                                <thead>
-                                    <tr>
-                                        <th>Organization Name</th>
-                                        <th>College</th>
-                                        <th>Description</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for org in organization %}
-                                    <tr>
-                                        <td>{{ org.name }}</td>
-                                        <td>{{ org.college }}</td>
-                                        <td>{{ org.description }}</td>
-                                        <td>
-                                            <div class="form-button-action">
-                                                <a href="{% url 'organization-update' org.pk %}" class="btn btn-link btn-primary btn-lg">
-                                                    <i class="fa fa-edit"></i>
-                                                </a>
-                                                <a href="{% url 'organization-delete' org.pk %}" class="btn btn-link btn-danger">
-                                                    <i class="fa fa-times"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                        <td colspan="4" class="text-center">No organizations found.</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        {% else %}
-                            <div class="alert alert-info">
-                                No organizations available. {% if user.is_authenticated %}You can add one using the button above.{% endif %}
-                            </div>
-                        {% endif %}
+                        <table class="table table-striped mt-3">
+                            <thead>
+                                <tr>
+                                    <th>Organization Name</th>
+                                    <th>College</th>
+                                    <th>Description</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for org in organization %}
+                                <tr>
+                                    <td>{{ org.name }}</td>
+                                    <td>{{ org.college }}</td>
+                                    <td>{{ org.description }}</td>
+                                    <td>
+                                        <div class="form-button-action">
+                                            <a href="{% url 'organization-update' org.pk %}" class="btn btn-link btn-primary btn-lg">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <a href="{% url 'organization-delete' org.pk %}" class="btn btn-link btn-danger">
+                                                <i class="fa fa-times"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                     {% if organization.has_other_pages %}
                     <div class="pagination float-right">
