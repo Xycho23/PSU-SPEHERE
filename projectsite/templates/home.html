@@ -13,6 +13,111 @@
                 </div>
             </div>
         </div>
+
+        <div class="row mt-4">
+            <!-- Program Distribution -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Programs Distribution</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="height: 250px">
+                            <canvas id="programChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- College Distribution -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">College Distribution</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="height: 250px">
+                            <canvas id="collegeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Trends -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Monthly Student Trends</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="height: 250px">
+                            <canvas id="monthlyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extrajs %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chartData = {{ chart_data|safe }};
+
+    // Program Distribution Chart
+    new Chart(document.getElementById('programChart'), {
+        type: 'pie',
+        data: {
+            labels: chartData.programs.labels,
+            datasets: [{
+                data: chartData.programs.data,
+                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // College Distribution Chart
+    new Chart(document.getElementById('collegeChart'), {
+        type: 'bar',
+        data: {
+            labels: chartData.colleges.labels,
+            datasets: [{
+                label: 'Students per College',
+                data: chartData.colleges.data,
+                backgroundColor: '#36b9cc'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Monthly Trends Chart
+    new Chart(document.getElementById('monthlyChart'), {
+        type: 'line',
+        data: {
+            labels: chartData.monthly.labels,
+            datasets: [{
+                label: 'Student Registrations',
+                data: chartData.monthly.data,
+                borderColor: '#4e73df',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+});
+</script>
 {% endblock %}

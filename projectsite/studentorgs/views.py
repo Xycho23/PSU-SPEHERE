@@ -14,38 +14,98 @@ from django.db.models import Count
 from typing import Any
 from fireincident.models import Locations, Incident, FireStation, FireIncident
 from django.views import View
-
-class ChartView(ListView):
-    template_name = 'chart.html'
-    model = FireIncident
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        
-        # Severity data for pie chart
-        severity_counts = FireIncident.objects.values('severity_level').annotate(count=Count('id'))
-        context['severity_data'] = {item['severity_level']: item['count'] for item in severity_counts}
-        
-        # Monthly data for line chart
-        current_year = datetime.now().year
-        monthly_counts = FireIncident.objects.filter(date__year=current_year) \
-            .annotate(month=ExtractMonth('date')) \
-            .values('month') \
-            .annotate(count=Count('id')) \
-            .order_by('month')
-        
-        months = {1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun',
-                 7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec'}
-        context['monthly_data'] = {months[item['month']]: item['count'] 
-                                 for item in monthly_counts}
-
-        return context
+import json
 
 @method_decorator(login_required, name='dispatch')
 class HomePageView(ListView):
     model = Organization
     context_object_name = 'home'
     template_name = 'home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Basic counts
+        context['total_students'] = Student.objects.count()
+        context['total_colleges'] = College.objects.count()
+        context['total_programs'] = Program.objects.count()
+
+        # Program distribution data
+        program_stats = Program.objects.annotate(
+            student_count=Count('student')
+        ).values('prog_name', 'student_count')
+        
+        # College distribution data
+        college_stats = College.objects.annotate(
+            student_count=Count('program__student')
+        ).values('college_name', 'student_count')
+
+        # Student monthly data
+        monthly_stats = Student.objects.annotate(
+            month=ExtractMonth('created_at')
+        ).values('month').annotate(
+            count=Count('id')
+        ).order_by('month')
+
+        context['chart_data'] = json.dumps({
+            'programs': {
+                'labels': [p['prog_name'] for p in program_stats],
+                'data': [p['student_count'] for p in program_stats]
+            },
+            'colleges': {
+                'labels': [c['college_name'] for c in college_stats],
+                'data': [c['student_count'] for c in college_stats]
+            },
+            'monthly': {
+                'labels': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                'data': [next((m['count'] for m in monthly_stats if m['month'] == i), 0) for i in range(1, 13)]
+            }
+        })
+        
+        return context
+
+class ChartView(ListView):
+    model = Student
+    template_name = 'chart.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Debug print
+        print("Fetching chart data...")
+        
+        # Get program stats
+        program_stats = Program.objects.annotate(
+            student_count=Count('student')
+        ).values('prog_name', 'student_count')
+        
+        print("Program stats:", list(program_stats))
+        
+        context['chart_data'] = json.dumps({
+            'program': {
+                'labels': [p['prog_name'] for p in program_stats],
+                'data': [p['student_count'] for p in program_stats],
+            },
+            'college': {
+                'labels': list(College.objects.values_list('college_name', flat=True)),
+                'data': [
+                    Student.objects.filter(program__college=college).count()
+                    for college in College.objects.all()
+                ]
+            },
+            'monthly': {
+                'labels': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                'data': [
+                    Student.objects.filter(created_at__month=month).count()
+                    for month in range(1, 13)
+                ]
+            }
+        })
+        
+        # Debug print
+        print("Chart data:", context['chart_data'])
+        
+        return context
 
 class PieCountbySeverity(TemplateView):
     template_name = 'chart.html'
